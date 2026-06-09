@@ -1,0 +1,257 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-diary-bg text-gray-100 font-jetbrains;
+    overflow-x: hidden;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+}
+
+@layer components {
+  .crt-container {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .crt-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.15),
+      rgba(0, 0, 0, 0.15) 1px,
+      transparent 1px,
+      transparent 2px
+    );
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .crt-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(
+      ellipse at center,
+      transparent 0%,
+      rgba(0, 0, 0, 0.4) 100%
+    );
+    pointer-events: none;
+    z-index: 11;
+  }
+
+  .pixel-border {
+    border: 2px solid;
+    border-image: linear-gradient(45deg, currentColor, transparent) 1;
+    position: relative;
+  }
+
+  .pixel-border::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    border: 1px solid currentColor;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .glow-text {
+    text-shadow: 0 0 5px currentColor, 0 0 10px currentColor;
+  }
+
+  .btn-pixel {
+    @apply px-4 py-2 font-vt323 text-lg transition-all duration-150;
+    border: 2px solid;
+    box-shadow: 3px 3px 0 currentColor;
+  }
+
+  .btn-pixel:hover:not(:disabled) {
+    transform: translate(1px, 1px);
+    box-shadow: 2px 2px 0 currentColor;
+  }
+
+  .btn-pixel:active:not(:disabled) {
+    transform: translate(3px, 3px);
+    box-shadow: 0 0 0 currentColor;
+  }
+
+  .btn-pixel:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .ascii-divider {
+    font-family: 'VT323', monospace;
+    color: #39ff14;
+    opacity: 0.6;
+    letter-spacing: 2px;
+  }
+
+  .state-indicator {
+    @apply inline-block px-2 py-1 rounded text-sm font-vt323;
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  .scanline {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: rgba(57, 255, 20, 0.1);
+    animation: scanline 6s linear infinite;
+    pointer-events: none;
+    z-index: 20;
+  }
+
+  .diary-card {
+    @apply relative overflow-hidden transition-all duration-300;
+    border: 2px solid #333;
+  }
+
+  .diary-card:hover {
+    border-color: #39ff14;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(57, 255, 20, 0.3);
+  }
+
+  .diary-card.frozen {
+    border-color: #00d4ff;
+  }
+
+  .diary-card.dead {
+    border-color: #333;
+    opacity: 0.8;
+  }
+
+  .pipeline-node {
+    @apply relative p-3 rounded cursor-grab;
+    background: #2a2a2a;
+    border: 2px solid #444;
+    transition: all 0.2s;
+  }
+
+  .pipeline-node:hover {
+    border-color: #39ff14;
+  }
+
+  .pipeline-node.dragging {
+    opacity: 0.5;
+    cursor: grabbing;
+  }
+
+  .pipeline-node.enabled {
+    border-color: #39ff14;
+  }
+
+  .pipeline-node.disabled {
+    opacity: 0.5;
+  }
+
+  .item-card {
+    @apply relative p-4 rounded transition-all;
+    background: #222;
+    border: 2px solid;
+  }
+
+  .item-card.common {
+    border-color: #9ca3af;
+  }
+
+  .item-card.rare {
+    border-color: #3b82f6;
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+  }
+
+  .item-card.epic {
+    border-color: #ffd700;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+  }
+
+  .timeline-track {
+    @apply relative h-4 bg-gray-800 rounded-full overflow-hidden;
+  }
+
+  .timeline-progress {
+    @apply absolute top-0 left-0 h-full transition-all duration-100;
+    background: linear-gradient(90deg, #39ff14, #00d4ff);
+  }
+
+  .timeline-thumb {
+    @apply absolute top-1/2 -translate-y-1/2 w-6 h-6 rounded-full cursor-pointer;
+    background: #39ff14;
+    border: 2px solid #1a1a1a;
+    box-shadow: 0 0 10px #39ff14;
+    transition: transform 0.1s;
+  }
+
+  .timeline-thumb:hover {
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+
+  .terminal-input {
+    @apply w-full bg-transparent border-0 outline-none font-vt323 text-xl;
+    color: #39ff14;
+    caret-color: #39ff14;
+  }
+
+  .terminal-input::placeholder {
+    color: rgba(57, 255, 20, 0.3);
+  }
+}
+
+@keyframes scanline {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100vh);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px currentColor;
+  }
+  50% {
+    box-shadow: 0 0 20px currentColor, 0 0 30px currentColor;
+  }
+}
+
+@keyframes glitch {
+  0%, 100% {
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(-2px, 2px);
+  }
+  40% {
+    transform: translate(-2px, -2px);
+  }
+  60% {
+    transform: translate(2px, 2px);
+  }
+  80% {
+    transform: translate(2px, -2px);
+  }
+}
+
+.glitch-effect {
+  animation: glitch 0.3s infinite;
+}
