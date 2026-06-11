@@ -21,10 +21,16 @@ const diaryStore = useDiaryStore()
 const canvasRef = ref<HTMLCanvasElement | null>(null)
 const isHovered = ref(false)
 const showDeleteConfirm = ref(false)
+const currentTime = ref(globalTimeline.getTime())
 const stateMachine = new StateMachine()
 
 const scheduleStatus = computed(() => {
   return diaryStore.getDiaryScheduleStatus(props.diary)
+})
+
+const decayCountdown = computed(() => {
+  currentTime.value
+  return diaryStore.getDecayCountdown(props.diary)
 })
 
 const hasSchedule = computed(() => {
@@ -93,7 +99,8 @@ onMounted(() => {
   
   render()
   
-  unsubscribe = globalTimeline.subscribe(() => {
+  unsubscribe = globalTimeline.subscribe((time) => {
+    currentTime.value = time
     if (!props.diary.frozen) {
       render()
     }
@@ -224,6 +231,36 @@ function closeDeleteConfirm(e: Event) {
         </span>
         <span class="font-vt323">
           管线: {{ diary.pipeline.filter(p => p.enabled).length }} 种
+        </span>
+      </div>
+      
+      <div 
+        v-if="decayCountdown.timeToNext !== null || decayCountdown.timeToDeath !== null"
+        class="mt-1.5 flex items-center gap-1.5 flex-wrap"
+      >
+        <span 
+          v-if="decayCountdown.timeToNext !== null"
+          class="px-1.5 py-0.5 rounded text-xs font-vt323 border"
+          :class="[
+            decayCountdown.timeToNext < 50 
+              ? 'bg-red-500/20 text-red-400 border-red-500/40' 
+              : 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30'
+          ]"
+        >
+          ⏱️ →{{ STATE_NAMES[decayCountdown.nextState!] }}: +{{ Math.floor(decayCountdown.timeToNext) }}
+        </span>
+        <span 
+          v-if="decayCountdown.timeToDeath !== null"
+          class="px-1.5 py-0.5 rounded text-xs font-vt323 border"
+          :class="[
+            decayCountdown.timeToDeath < 100 
+              ? 'bg-red-500/20 text-red-400 border-red-500/40' 
+              : decayCountdown.timeToDeath < 300 
+                ? 'bg-orange-500/20 text-orange-300 border-orange-500/30'
+                : 'bg-gray-500/20 text-gray-400 border-gray-500/30'
+          ]"
+        >
+          💀 +{{ Math.floor(decayCountdown.timeToDeath) }}
         </span>
       </div>
       

@@ -732,6 +732,31 @@ export const useDiaryStore = defineStore('diary', () => {
     }
   }
 
+  function getDecayCountdown(diary: Diary): {
+    timeToNext: number | null
+    timeToDeath: number | null
+    nextState: DiaryState | null
+  } {
+    if (diary.frozen || diary.state === DS.SCHEDULED || diary.state === DS.DEAD) {
+      return { timeToNext: null, timeToDeath: null, nextState: null }
+    }
+
+    const diaryType = pluginLoader.getDiaryType(diary.type)
+    if (!diaryType) return { timeToNext: null, timeToDeath: null, nextState: null }
+
+    let sm = stateMachines.value.get(diary.type)
+    if (!sm) {
+      sm = new StateMachine()
+      sm.addTransitions(diaryType.transitions)
+      stateMachines.value.set(diary.type, sm)
+    }
+
+    const effectiveDecayStart = diary.decayStartTime ?? diary.createdAt
+    const elapsed = globalTimeline.getElapsedSince(effectiveDecayStart)
+
+    return sm.getDecayCountdown(diary, elapsed, diaryType.decayRate)
+  }
+
   return {
     diaries,
     archivedDiaries,
@@ -747,6 +772,7 @@ export const useDiaryStore = defineStore('diary', () => {
     checkAndTransition,
     rewindState,
     getDecayLevel,
+    getDecayCountdown,
     getDiariesByUser,
     archiveDiary,
     restoreDiary,

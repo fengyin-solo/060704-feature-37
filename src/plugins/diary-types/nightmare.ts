@@ -11,22 +11,26 @@ const nightmare: DiaryType = {
     {
       from: DiaryState.FRESH,
       to: DiaryState.ROTTING,
-      condition: (_, elapsed) => elapsed >= 50
+      condition: (_, elapsed) => elapsed >= 50,
+      threshold: 50
     },
     {
       from: DiaryState.ROTTING,
       to: DiaryState.ROTTED,
-      condition: (_, elapsed) => elapsed >= 150
+      condition: (_, elapsed) => elapsed >= 150,
+      threshold: 150
     },
     {
       from: DiaryState.ROTTED,
       to: DiaryState.DYING,
-      condition: (_, elapsed) => elapsed >= 300
+      condition: (_, elapsed) => elapsed >= 300,
+      threshold: 300
     },
     {
       from: DiaryState.DYING,
       to: DiaryState.DEAD,
-      condition: (_, elapsed) => elapsed >= 500
+      condition: (_, elapsed) => elapsed >= 500,
+      threshold: 500
     }
   ],
   deathEffect: (diary: Diary) => {

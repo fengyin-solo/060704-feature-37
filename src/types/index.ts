@@ -62,6 +62,7 @@ export interface StateTransition {
   to: DiaryState
   condition: (diary: Diary, elapsed: number) => boolean
   onTransition?: (diary: Diary) => void
+  threshold?: number
 }
 
 export interface DecayMethod {

@@ -14,22 +14,26 @@ const loveLetter: DiaryType = {
     {
       from: DiaryState.FRESH,
       to: DiaryState.ROTTING,
-      condition: (_, elapsed) => elapsed >= 200
+      condition: (_, elapsed) => elapsed >= 200,
+      threshold: 200
     },
     {
       from: DiaryState.ROTTING,
       to: DiaryState.ROTTED,
-      condition: (_, elapsed) => elapsed >= 600
+      condition: (_, elapsed) => elapsed >= 600,
+      threshold: 600
     },
     {
       from: DiaryState.ROTTED,
       to: DiaryState.DYING,
-      condition: (_, elapsed) => elapsed >= 1000
+      condition: (_, elapsed) => elapsed >= 1000,
+      threshold: 1000
     },
     {
       from: DiaryState.DYING,
       to: DiaryState.DEAD,
-      condition: (_, elapsed) => elapsed >= 2000
+      condition: (_, elapsed) => elapsed >= 2000,
+      threshold: 2000
     }
   ],
   itemEffectModifiers: {
